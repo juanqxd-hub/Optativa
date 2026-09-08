@@ -1,0 +1,30 @@
+int PULSADOR = 2; 
+int LED = 3; 
+int ESTADO = LOW;
+
+void setup() { 
+  pinMode(PULSADOR, INPUT); 
+  pinMode(LED, OUTPUT); 
+  digitalWrite(LED, ESTADO);
+} 
+
+void loop() { 
+
+  while (digitalRead(PULSADOR) == LOW) { 
+  }
+
+  if (ESTADO == LOW) {		
+    ESTADO = HIGH;
+  } else {
+    ESTADO = LOW;
+  }
+
+  digitalWrite(LED, ESTADO);
+
+  delay(50);
+
+  while (digitalRead(PULSADOR) == HIGH) {
+  }
+
+  delay(50);
+}

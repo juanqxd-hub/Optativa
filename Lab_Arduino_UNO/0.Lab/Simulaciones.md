@@ -4,7 +4,7 @@ https://wokwi.com/projects/472730210191820801
 
 
 Tinkercad
-https://www.tinkercad.com/things/0Xp2G7alEiN-exquisite-waasa
+https://www.tinkercad.com/things/0Xp2G7alEiN-exquisite-waasa?sharecode=_UrahyYqWFgGG5sIqhzebg9JrCSoVVAxT6Fe0RrKQas
 
 
 Velxio
