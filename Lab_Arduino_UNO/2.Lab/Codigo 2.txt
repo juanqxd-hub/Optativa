@@ -1,0 +1,29 @@
+int POTENCIOMETRO = A0;
+int LED = 3;
+
+int VALOR = 0;
+int BRILLO = 0;
+
+void setup() {
+
+  pinMode(LED, OUTPUT);
+  Serial.begin(9600);
+
+}
+
+void loop() {
+
+  VALOR = analogRead(POTENCIOMETRO);
+
+  BRILLO = map(VALOR, 0, 1023, 0, 255);
+
+  analogWrite(LED, BRILLO);
+
+  Serial.print("Potenciometro: ");
+  Serial.print(VALOR);
+
+  Serial.print("   Brillo LED: ");
+  Serial.println(BRILLO);
+
+  delay(100);
+}

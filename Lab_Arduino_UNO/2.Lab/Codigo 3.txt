@@ -1,0 +1,26 @@
+int LED = 3;
+
+void setup() {
+
+  pinMode(LED, OUTPUT);
+
+}
+
+void loop() {
+
+  // Aumentar brillo
+  for (int BRILLO = 0; BRILLO <= 255; BRILLO++) {
+
+    analogWrite(LED, BRILLO);
+    delay(10);
+
+  }
+
+  // Disminuir brillo
+  for (int BRILLO = 255; BRILLO >= 0; BRILLO--) {
+
+    analogWrite(LED, BRILLO);
+    delay(10);
+
+  }
+}
