@@ -1,0 +1,133 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// LCD 20x4
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+// Sensores
+const int sensores[3] = {A0, A1, A2};
+
+// Reles
+const int reles[3] = {7, 6, 5};
+
+// Calibracion inicial
+const int VALOR_SECO = 1023;
+const int VALOR_HUMEDO = 415;
+
+// Umbrales de humedad
+const int ENCENDER = 5;
+const int APAGAR = 15;
+
+// Modulos rele activos en LOW
+const int RELE_ON = LOW;
+const int RELE_OFF = HIGH;
+
+// Variables
+int valores[3];
+int humedad[3];
+bool bombaActiva[3] = {false, false, false};
+
+void setup() {
+  Serial.begin(9600);
+
+  // Apagar reles al iniciar
+  for (int i = 0; i < 3; i++) {
+    digitalWrite(reles[i], RELE_OFF);
+    pinMode(reles[i], OUTPUT);
+    pinMode(sensores[i], INPUT);
+  }
+
+  // Inicializar pantalla
+  lcd.init();
+  lcd.backlight();
+
+  lcd.setCursor(0, 0);
+  lcd.print("SMART IRRIGATION");
+  lcd.setCursor(0, 1);
+  lcd.print("Sistema de riego");
+  lcd.setCursor(0, 2);
+  lcd.print("Iniciando...");
+
+  delay(2000);
+  lcd.clear();
+}
+
+void loop() {
+
+  for (int i = 0; i < 3; i++) {
+
+    // Leer sensor
+    valores[i] = analogRead(sensores[i]);
+
+    // Convertir a porcentaje
+    humedad[i] = map(
+      valores[i],
+      VALOR_SECO,
+      VALOR_HUMEDO,
+      0,
+      100
+    );
+
+    humedad[i] = constrain(humedad[i], 0, 100);
+
+    // Control automatico con histeresis
+    if (humedad[i] < ENCENDER) {
+      bombaActiva[i] = true;
+    }
+    else if (humedad[i] >= APAGAR) {
+      bombaActiva[i] = false;
+    }
+
+    // Controlar rele
+    digitalWrite(
+      reles[i],
+      bombaActiva[i] ? RELE_ON : RELE_OFF
+    );
+
+    // Mostrar por monitor serial
+    Serial.print("Sensor ");
+    Serial.print(i + 1);
+    Serial.print(": ");
+    Serial.print(humedad[i]);
+    Serial.print("% - Bomba: ");
+
+    if (bombaActiva[i]) {
+      Serial.println("ON");
+    } else {
+      Serial.println("OFF");
+    }
+  }
+
+  // Mostrar datos en LCD
+  lcd.setCursor(0, 0);
+  lcd.print("SMART IRRIGATION    ");
+
+  for (int i = 0; i < 3; i++) {
+
+    lcd.setCursor(0, i + 1);
+
+    lcd.print("S");
+    lcd.print(i + 1);
+    lcd.print(":");
+
+    if (humedad[i] < 100) lcd.print(" ");
+    if (humedad[i] < 10) lcd.print(" ");
+
+    lcd.print(humedad[i]);
+    lcd.print("%  ");
+
+    lcd.print("B");
+    lcd.print(i + 1);
+    lcd.print(":");
+
+    if (bombaActiva[i]) {
+      lcd.print("ON ");
+    } else {
+      lcd.print("OFF");
+    }
+
+    lcd.print("   ");
+  }
+
+  delay(500);
+}
